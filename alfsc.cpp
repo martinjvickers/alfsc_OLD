@@ -149,10 +149,26 @@ void pairwise(ModifyStringOptions options)
 		//iterate through reference_markov_vec
 		for(auto const& p: reference_markov_vec)
         	{
+
+			if(p.size() == 0)
+			{
+				cout << "Skipping read " << refids[count] << ", contig number " << count << " as it contains no counts." << endl;
+				continue;
+			}
+	
 			outfile << "\"" << refids[count] << "\" ";
 
 			for(auto const& q: reference_markov_vec)
         		{
+
+				//check for all NNN query and ref
+				if(q.size() == 0)
+				{
+					cout << "Skipping read " << refids[count] << ", contig number " << count << " as it contains no counts." << endl;
+	                                continue;
+				}
+
+
 				if(options.type == "d2s")
 					outfile << d2s(p,q) << " ";
 				else if(options.type == "d2star")
@@ -178,10 +194,24 @@ void pairwise(ModifyStringOptions options)
                 //iterate through reference_markov_vec
                 for(auto const& p: reference_counts_vec)
                 {
+                        if(p.size() == 0)
+                        {
+                                cout << "Skipping read " << refids[count] << ", contig number " << count << " as it contains no counts." << endl;
+                                continue;
+                        }
+
 			outfile << "\"" << refids[count] << "\" ";
 
                         for(auto const& q: reference_counts_vec)
                         {
+
+                                //check for all NNN query and ref
+                                if(q.size() == 0)
+                                {
+                                        cout << "Skipping read " << refids[count] << ", contig number " << count << " as it contains no counts." << endl;
+                                        continue;
+                                }
+
 				if(options.type == "d2")
 					outfile << d2(p,q) << " ";
 				else if(options.type == "kmer")
@@ -278,6 +308,7 @@ void precompute(ModifyStringOptions options, CharString reference)
 
 	for(int r = 0; r < length(refids); r++)
 	{
+		//this silently converts Iupac codes to Ns too.
 		Dna5String referenceseq = refseqs[r];
 		if(options.noreverse != true)
                 {
@@ -289,6 +320,8 @@ void precompute(ModifyStringOptions options, CharString reference)
                 {
 			unordered_map<string, markov_dat> refmap; //store our current count
 			markov(referenceseq, options.klen, options.markovOrder, refmap); //count!
+			//if count's are zero, we should skip this read, this has a knock on effect though that in other places we rely on the order of the reference to provide the 
+			// need to have a think about this
 			reference_markov_vec.push_back(refmap); //insert results to global store
 
                 } else if(options.type == "d2" || options.type == "kmer" || options.type == "manhattan" || options.type == "chebyshev")
