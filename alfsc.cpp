@@ -168,7 +168,6 @@ void pairwise(ModifyStringOptions options)
 	                                continue;
 				}
 
-
 				if(options.type == "d2s")
 					outfile << d2s(p,q) << " ";
 				else if(options.type == "d2star")
@@ -187,7 +186,7 @@ void pairwise(ModifyStringOptions options)
 
 		}
 	} 
-	else if(options.type == "d2" || options.type == "kmer" || options.type == "manhatten" || options.type == "chebyshev")
+	else if(options.type == "d2" || options.type == "kmer" || options.type == "manhattan" || options.type == "chebyshev")
 	{
 		int count = 0;
 
